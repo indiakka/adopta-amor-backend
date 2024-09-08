@@ -38,6 +38,8 @@ target/*
 target/**
 /target/
 */target/**
+
+
 .env
 .venv
 env/
