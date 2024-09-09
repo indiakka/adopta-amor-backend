@@ -5,23 +5,50 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name = "pets") // Asumiendo que la tabla en la base de datos se llama "pets"
+@Table(name = "pets")
 public class Pets {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Asumiendo que el ID es autogenerado
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @NotNull(message = "El tipo de animal no puede estar vacío")
+    @Size(min = 3, max = 50, message = "El tipo debe tener entre 3 y 50 caracteres")
     private String tipo;
+
+    @NotNull(message = "El nombre no puede estar vacío")
+    @Size(min = 1, max = 50, message = "El nombre debe tener entre 1 y 50 caracteres")
     private String nombre;
+
+    @NotNull(message = "La raza no puede estar vacía")
+    @Size(min = 1, max = 50, message = "La raza debe tener entre 1 y 50 caracteres")
     private String raza;
+
+    @NotNull(message = "El tamaño no puede estar vacío")
     private String tamano;
+
+    @Size(max = 255, message = "Los cuidados especiales no pueden exceder los 255 caracteres")
     private String cuidadosEspeciales;
+
+    @NotNull(message = "La ubicación no puede estar vacía")
+    @Size(min = 3, max = 100, message = "La ubicación debe tener entre 3 y 100 caracteres")
     private String ubicacion;
+
+    @Min(value = 0, message = "La edad no puede ser negativa")
+    @Max(value = 30, message = "La edad no puede ser mayor a 30 años")
     private int edad;
+
+    @NotNull(message = "Los gastos de gestión no pueden estar vacíos")
+    @Size(max = 50, message = "Los gastos de gestión no pueden exceder los 50 caracteres")
     private String gastosDeGestion;
+
+    @Size(max = 255, message = "La URL de la imagen no puede exceder los 255 caracteres")
     private String imagen;
 
     // Constructor vacío requerido por JPA
