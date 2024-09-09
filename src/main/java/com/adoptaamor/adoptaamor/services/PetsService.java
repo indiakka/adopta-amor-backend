@@ -51,7 +51,7 @@ public class PetsService {
             petsRepository.save(updatePets);
             return new ResponseEntity<>(updatePets, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("Pet no encontrado", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Animal no encontrado", HttpStatus.NOT_FOUND);
         }
     }
 

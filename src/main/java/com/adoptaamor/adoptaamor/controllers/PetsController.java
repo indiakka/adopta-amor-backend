@@ -32,7 +32,7 @@ public class PetsController {
     }
 
     // Crear un nuevo animal
-    @PostMapping("/pets/create")
+    @PostMapping("/pets")
     public ResponseEntity<?> crearAnimal(@RequestBody AnimalDto animalDto) {
         Pets pet = new Pets();
         pet.setNombre(animalDto.getNombre());

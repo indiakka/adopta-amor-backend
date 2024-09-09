@@ -18,16 +18,15 @@ public class AnimalDto {
     @NotNull(message = "El tamaño no puede estar vacío")
     private String tamano;
 
-    private String cuidadosEspeciales; // Campo opcional
+    private String cuidadosEspeciales; 
 
     @NotNull(message = "La edad no puede estar vacía")
     private int edad;
 
-    private String imagen; // Campo opcional
+    private String imagen;
+    
+    private String ubicacion; 
 
-    private String ubicacion; // Campo opcional, no @NotNull ya que es opcional en la creación
-
-    // Getters y Setters
     public String getTipo() {
         return tipo;
     }
