@@ -5,27 +5,23 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.adoptaamor.adoptaamor.models.Pets;
+import com.adoptaamor.adoptaamor.payloads.AnimalDto;
 import com.adoptaamor.adoptaamor.services.PetsService;
 
-@CrossOrigin(origins = "http://localhost:5173") // Cambia el puerto al del frontend
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 public class PetsController {
+
     private final PetsService petsService;
 
     public PetsController(PetsService petsService) {
         this.petsService = petsService;
     }
 
+    // Obtener todos los animales
     @GetMapping("/pets")
     public ResponseEntity<List<Pets>> getPets() {
         List<Pets> pets = petsService.getPets();
@@ -35,33 +31,71 @@ public class PetsController {
         return ResponseEntity.ok(pets);
     }
 
+    // Crear un nuevo animal
     @PostMapping("/pets/create")
-    public ResponseEntity<Object> addPets(@RequestBody Pets pets) {
-        return petsService.addPets(pets);
+    public ResponseEntity<?> crearAnimal(@RequestBody AnimalDto animalDto) {
+        Pets pet = new Pets();
+        pet.setNombre(animalDto.getNombre());
+        pet.setRaza(animalDto.getRaza());
+        pet.setTipo(animalDto.getTipo());
+        pet.setTamano(animalDto.getTamano());
+        pet.setCuidadosEspeciales(animalDto.getCuidadosEspeciales());
+        pet.setEdad(animalDto.getEdad());
+        pet.setImagen(animalDto.getImagen());
+
+        // Valores predeterminados
+        pet.setUbicacion(animalDto.getUbicacion() != null ? animalDto.getUbicacion() : "Bilbao");
+        pet.setGastosDeGestion("500€"); // Valor predeterminado
+
+        petsService.addPets(pet);
+        return new ResponseEntity<>(pet, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/pets/{id}")
-    public ResponseEntity<Object> delete(@PathVariable("id") int id) {
-        Optional<Pets> existingPets = this.petsService.findById(id);
-        if (existingPets.isPresent()) {
-            this.petsService.delete(existingPets.get());
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.notFound().build();
-    }
-
+    // Actualizar un animal existente
     @PutMapping("/pets/{id}")
-    public ResponseEntity<Object> updatePets(@PathVariable("id") int id, @RequestBody Pets pets) {
-        return petsService.updatePets(id, pets);
+    public ResponseEntity<?> updatePets(@PathVariable("id") int id, @RequestBody AnimalDto animalDto) {
+        Optional<Pets> optionalPet = petsService.getPetsById(id);
+        if (!optionalPet.isPresent()) {
+            return new ResponseEntity<>("Animal no encontrado", HttpStatus.NOT_FOUND);
+        }
+
+        Pets pet = optionalPet.get();
+        
+        // Actualizar todos los campos (mantener el valor actual si no se proporciona)
+        pet.setNombre(animalDto.getNombre() != null ? animalDto.getNombre() : pet.getNombre());
+        pet.setRaza(animalDto.getRaza() != null ? animalDto.getRaza() : pet.getRaza());
+        pet.setTipo(animalDto.getTipo() != null ? animalDto.getTipo() : pet.getTipo());
+        pet.setTamano(animalDto.getTamano() != null ? animalDto.getTamano() : pet.getTamano());
+        pet.setCuidadosEspeciales(animalDto.getCuidadosEspeciales() != null ? animalDto.getCuidadosEspeciales() : pet.getCuidadosEspeciales());
+        pet.setEdad(animalDto.getEdad() > 0 ? animalDto.getEdad() : pet.getEdad());
+        pet.setImagen(animalDto.getImagen() != null ? animalDto.getImagen() : pet.getImagen());
+
+        // La ubicación y los gastos de gestión no cambian a menos que se indique explícitamente
+        pet.setUbicacion(animalDto.getUbicacion() != null ? animalDto.getUbicacion() : pet.getUbicacion());
+
+        petsService.updatePets(id, pet);
+        return new ResponseEntity<>(pet, HttpStatus.OK);
     }
 
+    // Obtener un animal por ID
     @GetMapping("/pets/{id}")
     public ResponseEntity<?> getPetsById(@PathVariable int id) {
         Optional<Pets> pets = petsService.getPetsById(id);
         if (pets.isPresent()) {
             return ResponseEntity.ok(pets.get());
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Pets not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Animal no encontrado");
         }
+    }
+
+    // Eliminar un animal
+    @DeleteMapping("/pets/{id}")
+    public ResponseEntity<Object> delete(@PathVariable("id") int id) {
+        Optional<Pets> existingPets = petsService.findById(id);
+        if (existingPets.isPresent()) {
+            petsService.delete(existingPets.get());
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 }

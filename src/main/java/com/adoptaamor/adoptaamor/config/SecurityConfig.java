@@ -24,39 +24,41 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 public class SecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final AuthenticationProvider authProvider;
+        private final JwtAuthenticationFilter jwtAuthenticationFilter;
+        private final AuthenticationProvider authProvider;
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http
-                .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .authorizeHttpRequests(authRequest -> authRequest
-                        .requestMatchers("/auth/**", "/", "/adoptar", "/pets").permitAll()
-                        .requestMatchers("/donar").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/editInfo/**").hasRole("ADMIN")
-                        .requestMatchers("/animalInfo/delete/**").hasRole("ADMIN")
-                        .anyRequest().authenticated())
-                .sessionManagement(sessionManager -> sessionManager
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authProvider)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
-    }
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+                return http
+                                .csrf(csrf -> csrf.disable())
+                                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                                .authorizeHttpRequests(authRequest -> authRequest
+                                                .requestMatchers("/auth/**", "/", "/adoptar", "/pets").permitAll()
+                                                .requestMatchers("/donar").hasAnyRole("USER", "ADMIN")
+                                                .requestMatchers("/editInfo/**").hasRole("ADMIN")
+                                                .requestMatchers("/animalInfo/delete/**").hasRole("ADMIN")
+                                                .anyRequest().authenticated())
+                                .sessionManagement(sessionManager -> sessionManager
+                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                                .authenticationProvider(authProvider)
+                                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                                .build();
+        }
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173")); // Permitir el frontend
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Métodos permitidos
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept", "X-Requested-With",
-                "Access-Control-Allow-Headers")); // Encabezados permitidos
-        configuration.setAllowCredentials(true); // Permitir cookies/credenciales
+        @Bean
+        public CorsConfigurationSource corsConfigurationSource() {
+                CorsConfiguration configuration = new CorsConfiguration();
+                configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173")); // Permitir el frontend
+                configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Métodos
+                                                                                                           // permitidos
+                configuration.setAllowedHeaders(
+                                Arrays.asList("Authorization", "Content-Type", "Accept", "X-Requested-With",
+                                                "Access-Control-Allow-Headers")); // Encabezados permitidos
+                configuration.setAllowCredentials(true); // Permitir cookies/credenciales
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // Aplica CORS a todas las rutas
-        return source;
-    }
-  
+                UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+                source.registerCorsConfiguration("/**", configuration); // Aplica CORS a todas las rutas
+                return source;
+        }
+
 }
