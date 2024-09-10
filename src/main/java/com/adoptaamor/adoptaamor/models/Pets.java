@@ -7,11 +7,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "pets") // Asumiendo que la tabla en la base de datos se llama "pets"
+@Table(name = "pets") 
 public class Pets {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Asumiendo que el ID es autogenerado
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     private String tipo;
@@ -24,11 +24,9 @@ public class Pets {
     private String gastosDeGestion;
     private String imagen;
 
-    // Constructor vacío requerido por JPA
     public Pets() {
     }
 
-    // Constructor completo
     public Pets(int id, String tipo, String nombre, String raza, String tamano, String cuidadosEspeciales,
             String ubicacion, int edad, String gastosDeGestion, String imagen) {
         this.id = id;
@@ -43,7 +41,6 @@ public class Pets {
         this.imagen = imagen;
     }
 
-    // Getters y Setters
     public int getId() {
         return id;
     }
@@ -124,7 +121,6 @@ public class Pets {
         this.imagen = imagen;
     }
 
-    // Método para mostrar la información del Pet
     @Override
     public String toString() {
         return "Pets{" +
