@@ -55,7 +55,7 @@ public class PetsService {
         }
     }
 
-    public Optional<Pets> findById(int id) { // Corregido el nombre del método
+    public Optional<Pets> findById(int id) { 
         return petsRepository.findById(id);
     }
 
