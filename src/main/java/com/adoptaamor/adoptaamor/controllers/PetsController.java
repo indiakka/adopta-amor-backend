@@ -10,18 +10,20 @@ import org.springframework.web.bind.annotation.*;
 import com.adoptaamor.adoptaamor.models.Pets;
 import com.adoptaamor.adoptaamor.payloads.AnimalDto;
 import com.adoptaamor.adoptaamor.services.PetsService;
+import com.adoptaamor.adoptaamor.services.UserService;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 public class PetsController {
 
     private final PetsService petsService;
+    private final UserService userService;
 
-    public PetsController(PetsService petsService) {
+    public PetsController(PetsService petsService,UserService userService) {
         this.petsService = petsService;
+        this.userService = userService;
     }
 
-    // Obtener todos los animales
     @GetMapping("/pets")
     public ResponseEntity<List<Pets>> getPets() {
         List<Pets> pets = petsService.getPets();
@@ -31,8 +33,7 @@ public class PetsController {
         return ResponseEntity.ok(pets);
     }
 
-    // Crear un nuevo animal
-    @PostMapping("/pets/create")
+    @PostMapping("/pets")
     public ResponseEntity<?> crearAnimal(@RequestBody AnimalDto animalDto) {
         Pets pet = new Pets();
         pet.setNombre(animalDto.getNombre());
@@ -43,15 +44,14 @@ public class PetsController {
         pet.setEdad(animalDto.getEdad());
         pet.setImagen(animalDto.getImagen());
 
-        // Valores predeterminados
         pet.setUbicacion(animalDto.getUbicacion() != null ? animalDto.getUbicacion() : "Bilbao");
         pet.setGastosDeGestion("500€"); // Valor predeterminado
+        pet.setUser(userService.getCurrentUser());
 
         petsService.addPets(pet);
         return new ResponseEntity<>(pet, HttpStatus.CREATED);
     }
 
-    // Actualizar un animal existente
     @PutMapping("/pets/{id}")
     public ResponseEntity<?> updatePets(@PathVariable("id") int id, @RequestBody AnimalDto animalDto) {
         Optional<Pets> optionalPet = petsService.getPetsById(id);
@@ -61,7 +61,6 @@ public class PetsController {
 
         Pets pet = optionalPet.get();
         
-        // Actualizar todos los campos (mantener el valor actual si no se proporciona)
         pet.setNombre(animalDto.getNombre() != null ? animalDto.getNombre() : pet.getNombre());
         pet.setRaza(animalDto.getRaza() != null ? animalDto.getRaza() : pet.getRaza());
         pet.setTipo(animalDto.getTipo() != null ? animalDto.getTipo() : pet.getTipo());
@@ -70,14 +69,12 @@ public class PetsController {
         pet.setEdad(animalDto.getEdad() > 0 ? animalDto.getEdad() : pet.getEdad());
         pet.setImagen(animalDto.getImagen() != null ? animalDto.getImagen() : pet.getImagen());
 
-        // La ubicación y los gastos de gestión no cambian a menos que se indique explícitamente
         pet.setUbicacion(animalDto.getUbicacion() != null ? animalDto.getUbicacion() : pet.getUbicacion());
 
         petsService.updatePets(id, pet);
         return new ResponseEntity<>(pet, HttpStatus.OK);
     }
 
-    // Obtener un animal por ID
     @GetMapping("/pets/{id}")
     public ResponseEntity<?> getPetsById(@PathVariable int id) {
         Optional<Pets> pets = petsService.getPetsById(id);
@@ -88,7 +85,6 @@ public class PetsController {
         }
     }
 
-    // Eliminar un animal
     @DeleteMapping("/pets/{id}")
     public ResponseEntity<Object> delete(@PathVariable("id") int id) {
         Optional<Pets> existingPets = petsService.findById(id);

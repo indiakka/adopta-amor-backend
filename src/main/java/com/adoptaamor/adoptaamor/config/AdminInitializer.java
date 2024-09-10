@@ -21,14 +21,12 @@ public class AdminInitializer {
 
     @PostConstruct
     public void init() {
-        // Verificar si el administrador ya existe
         if (userRepository.findByEmail("admin@gmail.com").isEmpty()) {
-            // Si no existe, crear el usuario administrador
             User admin = User.builder()
                     .name("Admin")
                     .email("admin@gmail.com")
-                    .password(passwordEncoder.encode("1111")) // Cifra la contraseña 1111
-                    .role(Role.ADMIN) // Asignar rol ADMIN
+                    .password(passwordEncoder.encode("1111")) 
+                    .role(Role.ADMIN) 
                     .build();
 
             userRepository.save(admin);

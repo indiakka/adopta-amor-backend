@@ -51,11 +51,11 @@ public class PetsService {
             petsRepository.save(updatePets);
             return new ResponseEntity<>(updatePets, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("Pet no encontrado", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Animal no encontrado", HttpStatus.NOT_FOUND);
         }
     }
 
-    public Optional<Pets> findById(int id) { // Corregido el nombre del método
+    public Optional<Pets> findById(int id) { 
         return petsRepository.findById(id);
     }
 

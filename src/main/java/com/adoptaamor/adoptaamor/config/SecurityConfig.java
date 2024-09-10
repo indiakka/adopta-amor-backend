@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -33,7 +34,10 @@ public class SecurityConfig {
                                 .csrf(csrf -> csrf.disable())
                                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                                 .authorizeHttpRequests(authRequest -> authRequest
-                                                .requestMatchers("/auth/**", "/", "/adoptar", "/pets").permitAll()
+                                                .requestMatchers("/auth/**", "/", "/adoptar").permitAll()
+                                                .requestMatchers(HttpMethod.GET, "/pets").permitAll() 
+                                                .requestMatchers(HttpMethod.POST, "/pets").hasAnyRole("USER", "ADMIN")
+                                                .requestMatchers(HttpMethod.PUT, "/pets").hasAnyRole( "ADMIN")
                                                 .requestMatchers("/donar").hasAnyRole("USER", "ADMIN")
                                                 .requestMatchers("/editInfo/**").hasRole("ADMIN")
                                                 .requestMatchers("/animalInfo/delete/**").hasRole("ADMIN")
@@ -48,16 +52,15 @@ public class SecurityConfig {
         @Bean
         public CorsConfigurationSource corsConfigurationSource() {
                 CorsConfiguration configuration = new CorsConfiguration();
-                configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173")); // Permitir el frontend
-                configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Métodos
-                                                                                                           // permitidos
+                configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
+                configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); 
                 configuration.setAllowedHeaders(
                                 Arrays.asList("Authorization", "Content-Type", "Accept", "X-Requested-With",
-                                                "Access-Control-Allow-Headers")); // Encabezados permitidos
-                configuration.setAllowCredentials(true); // Permitir cookies/credenciales
+                                                "Access-Control-Allow-Headers")); 
+                configuration.setAllowCredentials(true); 
 
                 UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-                source.registerCorsConfiguration("/**", configuration); // Aplica CORS a todas las rutas
+                source.registerCorsConfiguration("/**", configuration); 
                 return source;
         }
 

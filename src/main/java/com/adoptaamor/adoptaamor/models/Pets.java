@@ -1,9 +1,12 @@
 package com.adoptaamor.adoptaamor.models;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Max;
@@ -51,11 +54,13 @@ public class Pets {
     @Size(max = 255, message = "La URL de la imagen no puede exceder los 255 caracteres")
     private String imagen;
 
-    // Constructor vacío requerido por JPA
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = User.class)
+    @JoinColumn(name = "id_user",  nullable = false)
+    private User user;
+
     public Pets() {
     }
 
-    // Constructor completo
     public Pets(int id, String tipo, String nombre, String raza, String tamano, String cuidadosEspeciales,
             String ubicacion, int edad, String gastosDeGestion, String imagen) {
         this.id = id;
@@ -70,7 +75,6 @@ public class Pets {
         this.imagen = imagen;
     }
 
-    // Getters y Setters
     public int getId() {
         return id;
     }
@@ -151,7 +155,10 @@ public class Pets {
         this.imagen = imagen;
     }
 
-    // Método para mostrar la información del Pet
+    public void setUser(User user){
+        this.user = user;
+    }
+
     @Override
     public String toString() {
         return "Pets{" +

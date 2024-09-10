@@ -1,5 +1,6 @@
 package com.adoptaamor.adoptaamor.models;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -38,6 +39,9 @@ public class User implements UserDetails {
         @Enumerated(EnumType.STRING)
         @Column(nullable = false)
         private Role role;
+
+        @OneToMany(mappedBy ="user",fetch=FetchType.LAZY,cascade=CascadeType.PERSIST)
+        private List<Pets> pets = new ArrayList<>();
 
         @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -27,23 +27,19 @@ public class AuthService {
         this.jwtService = jwtService;
     }
 
-    // Método de registro
     public ResponseEntity<String> register(RegisterRequest registerRequest) {
-        // Verificar si el usuario ya existe
         Optional<User> existingUser = userRepository.findByEmail(registerRequest.getEmail());
         if (existingUser.isPresent()) {
             return new ResponseEntity<>("Email already in use", HttpStatus.BAD_REQUEST);
         }
 
-        // Cifrar la contraseña antes de guardar
         String encodedPassword = passwordEncoder.encode(registerRequest.getPassword());
 
-        // Crear el nuevo usuario
         User newUser = User.builder()
                 .name(registerRequest.getName())
                 .email(registerRequest.getEmail())
                 .password(encodedPassword)
-                .role(Role.USER) // Asigna el rol USER por defecto
+                .role(Role.USER) 
                 .build();
 
         userRepository.save(newUser);
@@ -51,8 +47,7 @@ public class AuthService {
         return new ResponseEntity<>("User registered successfully", HttpStatus.CREATED);
     }
 
-    // Método de login
-    // Método de login en AuthService
+
     public ResponseEntity<AuthResponse> login(LoginRequest loginRequest) {
         Optional<User> userOptional = userRepository.findByEmail(loginRequest.getEmail());
         if (userOptional.isEmpty()) {
@@ -65,7 +60,7 @@ public class AuthService {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
-        String token = jwtService.generateToken(user); // Ahora se genera el token correctamente
+        String token = jwtService.generateToken(user); 
 
         AuthResponse authResponse = new AuthResponse(token, user.getId(), user.getName(), user.getRole().name());
         return ResponseEntity.ok(authResponse);
