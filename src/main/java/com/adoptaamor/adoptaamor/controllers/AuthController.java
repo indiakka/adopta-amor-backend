@@ -16,20 +16,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = "http://localhost:5173") // Ajusta el puerto según tu frontend
+@CrossOrigin(origins = "http://localhost:5173") 
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthService authService; // Cambié la variable para usar convenciones comunes en minúsculas
+    private final AuthService authService; 
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        return authService.login(request); // Devuelve directamente el resultado del servicio
+        return authService.login(request); 
     }
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
-        return authService.register(request); // Devuelve directamente el resultado del servicio
+        return authService.register(request); 
     }
 
 }

@@ -13,7 +13,6 @@ public class AuthResponse {
         this.role = role;
     }
 
-    // Getters y setters
     public String getToken() {
         return token;
     }
