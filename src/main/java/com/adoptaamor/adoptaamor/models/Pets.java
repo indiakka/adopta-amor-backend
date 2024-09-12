@@ -9,6 +9,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -21,29 +22,34 @@ public class Pets {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @NotBlank(message = "El tipo es obligatorio")
     @NotNull(message = "El tipo de animal no puede estar vacío")
     @Size(min = 3, max = 50, message = "El tipo debe tener entre 3 y 50 caracteres")
     private String tipo;
 
+    @NotBlank(message = "El nombre es obligatorio")
     @NotNull(message = "El nombre no puede estar vacío")
     @Size(min = 1, max = 50, message = "El nombre debe tener entre 1 y 50 caracteres")
     private String nombre;
 
+    @NotBlank(message = "La raza es obligatoria")
     @NotNull(message = "La raza no puede estar vacía")
     @Size(min = 1, max = 50, message = "La raza debe tener entre 1 y 50 caracteres")
     private String raza;
 
+    @NotBlank(message = "El tamaño es obligatorio")
     @NotNull(message = "El tamaño no puede estar vacío")
     private String tamano;
 
     @Size(max = 255, message = "Los cuidados especiales no pueden exceder los 255 caracteres")
     private String cuidadosEspeciales;
 
+    @NotBlank(message = "La ubicación es obligatoria")
     @NotNull(message = "La ubicación no puede estar vacía")
     @Size(min = 3, max = 100, message = "La ubicación debe tener entre 3 y 100 caracteres")
     private String ubicacion;
 
-    @Min(value = 0, message = "La edad no puede ser negativa")
+    @Min(value = -1, message = "La edad no puede ser negativa")
     @Max(value = 30, message = "La edad no puede ser mayor a 30 años")
     private int edad;
 
