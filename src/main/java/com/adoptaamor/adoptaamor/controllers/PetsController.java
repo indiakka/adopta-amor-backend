@@ -12,6 +12,8 @@ import com.adoptaamor.adoptaamor.payloads.AnimalDto;
 import com.adoptaamor.adoptaamor.services.PetsService;
 import com.adoptaamor.adoptaamor.services.UserService;
 
+import jakarta.validation.Valid;
+
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 public class PetsController {
@@ -34,7 +36,7 @@ public class PetsController {
     }
 
     @PostMapping("/pets")
-    public ResponseEntity<?> crearAnimal(@RequestBody AnimalDto animalDto) {
+    public ResponseEntity<?> crearAnimal(@Valid @RequestBody AnimalDto animalDto) {
         Pets pet = new Pets();
         pet.setNombre(animalDto.getNombre());
         pet.setRaza(animalDto.getRaza());
@@ -43,7 +45,6 @@ public class PetsController {
         pet.setCuidadosEspeciales(animalDto.getCuidadosEspeciales());
         pet.setEdad(animalDto.getEdad());
         pet.setImagen(animalDto.getImagen());
-
         pet.setUbicacion(animalDto.getUbicacion() != null ? animalDto.getUbicacion() : "Bilbao");
         pet.setGastosDeGestion("500€"); // Valor predeterminado
         pet.setUser(userService.getCurrentUser());
